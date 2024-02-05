@@ -6,6 +6,7 @@ import time
 import openpyxl
 
 print("Select the database files DB1, DB2, DB3 etc")
+print()
 # time.sleep(0)
 
 # create tkinter root window (it won't be shown)
@@ -22,10 +23,10 @@ if not selected_db_files:
     sys.exit()
 else:
     print(str(len(selected_db_files)) + " DB file(s) selected")
+    print()
 
 # data importation
 print("Importing the DB files. This will take a few minutes ...")
-print()
 
 # import data
 tables = []
@@ -124,7 +125,26 @@ for tbl in tables:
 
             # looping through rows and filtering finished.
             # update the Excel file
-            sheet.cell(row=row + 2, column=start_col, value="Updated")
+            # only if work_table has rows with data
+            if work_tbl.shape[0] > 0:
+                sheet.cell(row=row + 2, column=start_col , value=work_tbl['N+1 H vs. Close'].mean())
+                sheet.cell(row=row + 2, column=start_col + 1, value=work_tbl['N+1 H vs. Close'].count())
+                sheet.cell(row=row + 2, column=start_col + 2, value=(work_tbl['N+1 H vs. Close'] > 0).count())
+                sheet.cell(row=row + 2, column=start_col + 3, value=(work_tbl['N+1 H vs. Close'] == 0).count())
+                sheet.cell(row=row + 2, column=start_col + 4, value=(work_tbl['N+1 H vs. Close'] < 0).count())
+                sheet.cell(row=row + 2, column=start_col + 5, value=work_tbl['N+1 H vs. Close'].sum())
+                sheet.cell(row=row + 2, column=start_col + 6, value=work_tbl['N+2 C vs. Close'].mean())
+                sheet.cell(row=row + 2, column=start_col + 7, value=work_tbl['N+2 C vs. Close'].count())
+                sheet.cell(row=row + 2, column=start_col + 8, value=(work_tbl['N+2 C vs. Close'] > 0).count())
+                sheet.cell(row=row + 2, column=start_col + 9, value=(work_tbl['N+2 C vs. Close'] == 0).count())
+                sheet.cell(row=row + 2, column=start_col + 10, value=(work_tbl['N+2 C vs. Close'] < 0).count())
+                sheet.cell(row=row + 2, column=start_col + 11, value=work_tbl['N+2 C vs. Close'].sum())
+                sheet.cell(row=row + 2, column=start_col + 12, value=work_tbl['N+5 C vs. Close'].mean())
+                sheet.cell(row=row + 2, column=start_col + 13, value=work_tbl['N+5 C vs. Close'].count())
+                sheet.cell(row=row + 2, column=start_col + 14, value=(work_tbl['N+5 C vs. Close'] > 0).count())
+                sheet.cell(row=row + 2, column=start_col + 15, value=(work_tbl['N+5 C vs. Close'] == 0).count())
+                sheet.cell(row=row + 2, column=start_col + 16, value=(work_tbl['N+5 C vs. Close'] < 0).count())
+                sheet.cell(row=row + 2, column=start_col + 17, value=work_tbl['N+5 C vs. Close'].sum())
 
         print("check_tbl " + str(check_tbl))
 
