@@ -6,6 +6,7 @@ import time
 import openpyxl
 
 print("Select the database files DB1, DB2, DB3 etc")
+print()
 # time.sleep(0)
 
 # create tkinter root window (it won't be shown)
@@ -24,20 +25,6 @@ else:
     print(str(len(selected_db_files)) + " DB file(s) selected")
     print()
 
-# check whether Excel column headings are similar
-headers = []
-for i in range(len(selected_db_files)):
-    headers.append(pd.read_excel(selected_db_files[i], nrows=0).columns.tolist())
-
-for i in range(len(headers)):
-    for j in range(len(headers)):
-        if headers[i][:-36] == (headers[j])[:-36]:
-            pass
-        else:
-            print('DB file headers are not the same. Make sure they are the same before proceeding.')
-            print('Make sure that columns A to AS have same names.')
-            sys.exit()
-
 # data importation
 print("Importing the DB files. This will take a few minutes ...")
 
@@ -46,7 +33,7 @@ tables = []
 
 start_time = time.time()
 for i in range(len(selected_db_files)):
-    tables.append(pd.read_excel(selected_db_files[i], engine='openpyxl', nrows=10000))
+    tables.append(pd.read_excel(selected_db_files[i], engine='openpyxl'))
 
 print("DB1, DB2, DB3 etc imported successfully!")
 end_time = time.time()
@@ -130,7 +117,7 @@ for tbl in tables:
                     # if it is not a string, and it is not an int
                     else:
                         print("WARNING! Check filter value of row " + str(row) + " and column " + str(
-                            col) + " in DB" + str(table_index + 1))
+                            col) + " in DB" + str(check_tbl + 1))
                         print("The filter value has been ignored")
                         print()
                 else:
@@ -140,35 +127,29 @@ for tbl in tables:
             # update the Excel file
             # only if work_table has rows with data
             if work_tbl.shape[0] > 0:
-                sheet.cell(row=row + 2, column=start_col, value=work_tbl['N+1 H vs. Close'].mean())
+                sheet.cell(row=row + 2, column=start_col , value=work_tbl['N+1 H vs. Close'].mean())
                 sheet.cell(row=row + 2, column=start_col + 1, value=work_tbl['N+1 H vs. Close'].count())
-                sheet.cell(row=row + 2, column=start_col + 2, value=(work_tbl['N+1 H vs. Close'] > 0).sum())
-                sheet.cell(row=row + 2, column=start_col + 3, value=(work_tbl['N+1 H vs. Close'] == 0).sum())
-                sheet.cell(row=row + 2, column=start_col + 4, value=(work_tbl['N+1 H vs. Close'] < 0).sum())
+                sheet.cell(row=row + 2, column=start_col + 2, value=(work_tbl['N+1 H vs. Close'] > 0).count())
+                sheet.cell(row=row + 2, column=start_col + 3, value=(work_tbl['N+1 H vs. Close'] == 0).count())
+                sheet.cell(row=row + 2, column=start_col + 4, value=(work_tbl['N+1 H vs. Close'] < 0).count())
                 sheet.cell(row=row + 2, column=start_col + 5, value=work_tbl['N+1 H vs. Close'].sum())
                 sheet.cell(row=row + 2, column=start_col + 6, value=work_tbl['N+2 C vs. Close'].mean())
                 sheet.cell(row=row + 2, column=start_col + 7, value=work_tbl['N+2 C vs. Close'].count())
-                sheet.cell(row=row + 2, column=start_col + 8, value=(work_tbl['N+2 C vs. Close'] > 0).sum())
-                sheet.cell(row=row + 2, column=start_col + 9, value=(work_tbl['N+2 C vs. Close'] == 0).sum())
-                sheet.cell(row=row + 2, column=start_col + 10, value=(work_tbl['N+2 C vs. Close'] < 0).sum())
+                sheet.cell(row=row + 2, column=start_col + 8, value=(work_tbl['N+2 C vs. Close'] > 0).count())
+                sheet.cell(row=row + 2, column=start_col + 9, value=(work_tbl['N+2 C vs. Close'] == 0).count())
+                sheet.cell(row=row + 2, column=start_col + 10, value=(work_tbl['N+2 C vs. Close'] < 0).count())
                 sheet.cell(row=row + 2, column=start_col + 11, value=work_tbl['N+2 C vs. Close'].sum())
                 sheet.cell(row=row + 2, column=start_col + 12, value=work_tbl['N+5 C vs. Close'].mean())
                 sheet.cell(row=row + 2, column=start_col + 13, value=work_tbl['N+5 C vs. Close'].count())
-                sheet.cell(row=row + 2, column=start_col + 14, value=(work_tbl['N+5 C vs. Close'] > 0).sum())
-                sheet.cell(row=row + 2, column=start_col + 15, value=(work_tbl['N+5 C vs. Close'] == 0).sum())
-                sheet.cell(row=row + 2, column=start_col + 16, value=(work_tbl['N+5 C vs. Close'] < 0).sum())
+                sheet.cell(row=row + 2, column=start_col + 14, value=(work_tbl['N+5 C vs. Close'] > 0).count())
+                sheet.cell(row=row + 2, column=start_col + 15, value=(work_tbl['N+5 C vs. Close'] == 0).count())
+                sheet.cell(row=row + 2, column=start_col + 16, value=(work_tbl['N+5 C vs. Close'] < 0).count())
                 sheet.cell(row=row + 2, column=start_col + 17, value=work_tbl['N+5 C vs. Close'].sum())
 
         print("check_tbl " + str(check_tbl))
 
         # actual Excel indexing
         start_col = 80
-
-    # format percent columns
-    percent_columns = ['BJ', 'BO', 'BP', 'BU', 'BV', 'CA', 'CB', 'CG', 'CH', 'CM', 'CN', 'CS']
-
-    for cell in sheet[percent_columns]:
-        cell.number_format = '0.00%'
 
     # save and close the workbook
     workbook.save(new_workbook_path)
